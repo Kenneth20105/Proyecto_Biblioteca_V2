@@ -1,114 +1,102 @@
 package gui;
 
+import model.Usuario;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
-
 public class LoginWindow extends JFrame {
-    private final GestorBiblioteca gestor;
-    private JTextField txtUsuario;
-    private JPasswordField txtContrasena;
+    private JTextField campoCarnet;
+    private JPasswordField campoPassword;
+    private GestorBiblioteca gestor;
 
-    public LoginWindow() throws SQLException {
-        gestor = new GestorBiblioteca();
-        setTitle("Login - Biblioteca Don Bosco");
-        setSize(350, 250);
+    public LoginWindow() {
+        setTitle("Inicio de Sesión - Biblioteca Don Bosco");
+        setSize(480, 520); // tamaño como el de la imagen
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(null); // centra la ventana
+        setResizable(false);
+
+        try {
+            gestor = new GestorBiblioteca();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
+
         construirUI();
     }
 
     private void construirUI() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        JPanel panelPrincipal = new JPanel();
+        panelPrincipal.setLayout(new BorderLayout(10, 10));
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        // Logo o título
-        JLabel lblTitulo = new JLabel("Biblioteca Don Bosco");
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(lblTitulo, gbc);
+        // Panel superior: título y logo
+        JPanel panelSuperior = new JPanel(new BorderLayout(5, 5));
 
-        // Añadir imagen como logo (debajo del título)
-        ImageIcon logoIcon = new ImageIcon("C:\\Users\\kfjva\\IdeaProjects\\Proyecto_Fase_1\\Don-Bosco imagen.png"); // Cambia esta ruta
-        // Redimensionar la imagen si es necesario
-        Image image = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-        logoIcon = new ImageIcon(image);
-        JLabel lblLogo = new JLabel(logoIcon);
-        gbc.gridx = 0;
-        gbc.gridy = 1;  // Posición debajo del título
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(lblLogo, gbc);
+        JLabel tituloLabel = new JLabel("Biblioteca Amigos de Don Bosco");
+        tituloLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        tituloLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panelSuperior.add(tituloLabel, BorderLayout.NORTH);
 
-        // Campos de formulario
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.EAST;
+        JLabel imagenLabel = new JLabel();
+        ImageIcon icono = new ImageIcon("Don-Bosco imagen.png"); // <- asegúrate que esta imagen exista
+        Image imagen = icono.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        imagenLabel.setIcon(new ImageIcon(imagen));
+        imagenLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panelSuperior.add(imagenLabel, BorderLayout.CENTER);
 
-        JLabel lblUsuario = new JLabel("Usuario:");
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panel.add(lblUsuario, gbc);
+        panelPrincipal.add(panelSuperior, BorderLayout.NORTH);
 
-        txtUsuario = new JTextField(15);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 1;
-        panel.add(txtUsuario, gbc);
+        // Formulario de campos
+        JPanel formulario = new JPanel(new GridLayout(4, 1, 10, 5));
 
-        JLabel lblContrasena = new JLabel("Contraseña:");
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        panel.add(lblContrasena, gbc);
+        JLabel labelCarnet = new JLabel("Carnet:");
+        labelCarnet.setHorizontalAlignment(SwingConstants.LEFT);
+        campoCarnet = new JTextField();
 
-        txtContrasena = new JPasswordField(15);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 1;
-        panel.add(txtContrasena, gbc);
+        JLabel labelPassword = new JLabel("Contraseña:");
+        labelPassword.setHorizontalAlignment(SwingConstants.LEFT);
+        campoPassword = new JPasswordField();
 
-        // Botón de login
-        JButton btnLogin = new JButton("Iniciar Sesión");
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(btnLogin, gbc);
+        formulario.add(labelCarnet);
+        formulario.add(campoCarnet);
+        formulario.add(labelPassword);
+        formulario.add(campoPassword);
 
-        btnLogin.addActionListener(e -> autenticarUsuario());
+        panelPrincipal.add(formulario, BorderLayout.CENTER);
 
-        // Ajustar tamaño de la ventana para acomodar el logo
-        setSize(350, 350);  //Altura para el logo
+        // Botón de inicio
+        JButton btnIniciar = new JButton("Iniciar Sesión");
+        btnIniciar.setPreferredSize(new Dimension(150, 30));
+        btnIniciar.addActionListener(e -> iniciarSesion());
 
-        add(panel);
+        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelBoton.add(btnIniciar);
+        panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
+
+        add(panelPrincipal);
     }
 
-    private void autenticarUsuario() {
-        String usuario = txtUsuario.getText();
-        String contrasena = new String(txtContrasena.getPassword());
-
-        if (usuario.isEmpty() || contrasena.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Usuario y contraseña son requeridos", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    private void iniciarSesion() {
+        String carnet = campoCarnet.getText();
+        String password = new String(campoPassword.getPassword());
 
         try {
-            String rol = gestor.validarCredenciales(usuario, contrasena);
-
-            if (rol != null) {
-                dispose(); // Cierra la ventana de login
-                new VentanaPrincipal(rol).setVisible(true);
+            Usuario usuario = gestor.validarCredencialesPorCarnet(carnet, password);
+            if (usuario != null) {
+                JOptionPane.showMessageDialog(this, "Bienvenido " + usuario.getNombre() + " (" + usuario.getRol() + ")");
+                new VentanaPrincipal(usuario).setVisible(true);
+                dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Credenciales inválidas", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Carnet o contraseña incorrectos.");
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos: " + ex.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
-
+            JOptionPane.showMessageDialog(this, "Error al validar credenciales: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

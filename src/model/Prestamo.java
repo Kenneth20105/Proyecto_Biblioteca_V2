@@ -2,65 +2,58 @@ package model;
 
 import java.time.LocalDate;
 
+
 public class Prestamo {
     private int id;
     private int idUsuario;
+    private String nombreUsuario;
     private int idDocumento;
+    private String nombreDocumento;
     private LocalDate fechaPrestamo;
     private LocalDate fechaDevolucion;
+    private double montoMora;
     private boolean devuelto;
 
-    //NUEVOS CAMPOS para mostrar nombres en la tabla
-    private String nombreUsuario;
-    private String nombreDocumento;
-
-    // Constructor original
-    public Prestamo(int id, int idUsuario, int idDocumento, LocalDate fechaPrestamo, boolean devuelto, LocalDate fechaDevolucion) {
+    public Prestamo(int id, int idUsuario, int idDocumento, LocalDate fechaPrestamo, LocalDate fechaDevolucion, boolean devuelto) {
         this.id = id;
         this.idUsuario = idUsuario;
         this.idDocumento = idDocumento;
         this.fechaPrestamo = fechaPrestamo;
-        this.devuelto = devuelto;
         this.fechaDevolucion = fechaDevolucion;
+        this.devuelto = devuelto;
+    }
+
+    public Prestamo(int id, int idUsuario, int idDocumento, LocalDate fechaPrestamo, LocalDate fechaDevolucion, boolean devuelto, double montoMora) {
+        this.id = id;
+        this.idUsuario = idUsuario;
+        this.idDocumento = idDocumento;
+        this.fechaPrestamo = fechaPrestamo;
+        this.fechaDevolucion = fechaDevolucion;
+        this.devuelto = devuelto;
+        this.montoMora = montoMora;
     }
 
     // Getters y Setters
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
+    public int getIdUsuario() { return idUsuario; }
+    public int getIdDocumento() { return idDocumento; }
 
-    public LocalDate getFechaPrestamo() {
-        return fechaPrestamo;
-    }
+    public LocalDate getFechaPrestamo() { return fechaPrestamo; }
+    public LocalDate getFechaDevolucion() { return fechaDevolucion; }
 
-    public LocalDate getFechaDevolucion() {
-        return fechaDevolucion;
-    }
+    public boolean isDevuelto() { return devuelto; }
+    public void setDevuelto(boolean devuelto) { this.devuelto = devuelto; }
 
-    public boolean isDevuelto() {
-        return devuelto;
-    }
+    public double getMontoMora() {return montoMora;}
+    public void setMontoMora(double montoMora) {this.montoMora = montoMora;}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getNombreUsuario() { return nombreUsuario; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
 
-    //NUEVOS Getters y Setters
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
-
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
-    }
-    public String getNombreDocumento() {
-        return nombreDocumento;
-    }
-
-    public void setNombreDocumento(String nombreDocumento) {
-        this.nombreDocumento = nombreDocumento;
-    }
+    public String getNombreDocumento() { return nombreDocumento; }
+    public void setNombreDocumento(String nombreDocumento) { this.nombreDocumento = nombreDocumento; }
 
     @Override
     public String toString() {
