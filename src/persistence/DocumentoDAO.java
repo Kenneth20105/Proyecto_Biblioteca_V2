@@ -178,7 +178,7 @@ public class DocumentoDAO {
                     case "tesis":
                         doc.setCarrera(rs.getString("carrera"));
                         doc.setUniversidad(rs.getString("universidad"));
-                        doc.setTema(rs.getString("asesor_academico"));
+                        doc.setAsesorAcademico(rs.getString("asesor_academico"));
                         break;
                 }
 

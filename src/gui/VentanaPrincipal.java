@@ -42,23 +42,30 @@ public class VentanaPrincipal extends JFrame {
         JPanel panelSuperior = new JPanel(new BorderLayout());
 
 // Banner a la izquierda
+        JLabel labelBanner;
         try {
-            ImageIcon banner = new ImageIcon("banner.png");  // Imagen tipo "Biblioteca Amigos de Don Bosco"
-            JLabel labelBanner = new JLabel(banner);
-            panelSuperior.add(labelBanner, BorderLayout.WEST);
-        } catch (Exception e) {
-            JLabel labelFallback = new JLabel("📚 Biblioteca Amigos de Don Bosco");
-            labelFallback.setFont(new Font("Arial", Font.BOLD, 16));
-            panelSuperior.add(labelFallback, BorderLayout.WEST);
-        }
+            // Cargar la imagen original
+            ImageIcon originalIcon = new ImageIcon(getClass().getResource("Banner donbosco V4.png"));
+            // Escalar la imagen
+            int anchoDeseado = 1800;  // Por ejemplo
+            int altoDeseado = 300;
 
+            Image imagenEscalada = originalIcon.getImage().getScaledInstance(anchoDeseado, altoDeseado, Image.SCALE_SMOOTH);
+            ImageIcon iconoEscalado = new ImageIcon(imagenEscalada);
+            labelBanner = new JLabel(iconoEscalado);
+        } catch (Exception ex) {
+            labelBanner = new JLabel("📚 Biblioteca Amigos de Don Bosco");
+            labelBanner.setFont(new Font("Arial", Font.BOLD, 16));
+        }
+        panelSuperior.add(labelBanner, BorderLayout.WEST);
+        panelSuperior.add(labelBanner, BorderLayout.WEST);
 // Botón de usuario
         JButton botonUsuario = new JButton("👤");
         botonUsuario.setFocusPainted(false);
         botonUsuario.setMargin(new Insets(4, 8, 4, 8));
         botonUsuario.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-// Menú emergente
+     //Menu emergente
         JPopupMenu menuUsuario = new JPopupMenu();
 
         JMenuItem itemPrestar = new JMenuItem("Prestar");
@@ -88,42 +95,44 @@ public class VentanaPrincipal extends JFrame {
             }
         });
         JMenuItem itemMora = new JMenuItem("Mi Mora");
-        itemMora.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    List<Prestamo> moras = gestor.obtenerMorasDeUsuarioPorCarnet(usuario.getCarnet());
+        itemMora.addActionListener(e -> {
+            try {
+                List<Prestamo> moras = gestor.obtenerTodasLasMoras(usuario.getCarnet());
 
-                    if (moras.isEmpty()) {
-                        mostrarMensaje("Actualmente no posee moras pendientes.");
-                        return;
-                    }
-
-                    String[] columnas = {"ID Préstamo", "Fecha Préstamo", "Fecha Devolución", "Monto Mora"};
-                    Object[][] datos = new Object[moras.size()][4];
-                    double total = 0;
-
-                    for (int i = 0; i < moras.size(); i++) {
-                        Prestamo p = moras.get(i);
-                        datos[i][0] = p.getId();
-                        datos[i][1] = p.getFechaPrestamo();
-                        datos[i][2] = p.getFechaDevolucion();
-                        datos[i][3] = String.format("$%.2f", p.getMontoMora());
-                        total += p.getMontoMora();
-                    }
-
-                    JTable tabla = new JTable(datos, columnas);
-                    JScrollPane scroll = new JScrollPane(tabla);
-                    tabla.setFillsViewportHeight(true);
-
-                    JPanel panel = new JPanel(new BorderLayout());
-                    panel.add(scroll, BorderLayout.CENTER);
-                    panel.add(new JLabel("Monto total a pagar: $" + String.format("%.2f", total)), BorderLayout.SOUTH);
-
-                    JOptionPane.showMessageDialog(null, panel, "Detalle de Moras", JOptionPane.PLAIN_MESSAGE);
-
-                } catch (Exception ex) {
-                    mostrarError("Error al consultar moras: " + ex.getMessage());
+                if (moras.isEmpty()) {
+                    mostrarMensaje("Actualmente no posee moras pendientes.");
+                    return;
                 }
+
+                String[] columnas = {"ID Préstamo", "Fecha Préstamo", "Fecha Devolución", "Monto Mora"};
+                Object[][] datos = new Object[moras.size()][4];
+                double total = 0;
+
+                for (int i = 0; i < moras.size(); i++) {
+                    Prestamo p = moras.get(i);
+                    datos[i][0] = p.getId();
+                    datos[i][1] = p.getFechaPrestamo();
+                    datos[i][2] = p.getFechaDevolucion();
+                    datos[i][3] = String.format("$%.2f", p.getMontoMora());
+                    total += p.getMontoMora();
+                }
+
+                JTable tabla = new JTable(datos, columnas);
+                JScrollPane scroll = new JScrollPane(tabla);
+                tabla.setFillsViewportHeight(true);
+
+                JPanel panel = new JPanel(new BorderLayout());
+                panel.add(scroll, BorderLayout.CENTER);
+
+                JLabel totalLabel = new JLabel("Monto total pendiente: $" + String.format("%.2f", total));
+                totalLabel.setHorizontalAlignment(JLabel.CENTER);
+                totalLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                panel.add(totalLabel, BorderLayout.SOUTH);
+
+                JOptionPane.showMessageDialog(null, panel, "Detalle de Moras", JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (Exception ex) {
+                mostrarError("Error al consultar moras: " + ex.getMessage());
             }
         });
 
@@ -195,10 +204,10 @@ public class VentanaPrincipal extends JFrame {
                 panelFiltro.add(comboTipo);
                 panelFiltro.add(btnBuscar);
                 panelFiltro.add(btnLimpiar);
-
+                 //Edicion de tabla de documentos
                 DefaultTableModel modelo = new DefaultTableModel(new String[]{
                         "ID", "Tipo", "Título", "Autor", "Año", "Editorial", "Páginas",
-                        "Número", "Mes", "Género", "Tema", "Duración", "Ubicación Física"
+                        "Número", "Mes", "Género","Asesor Academico", "Tema", "Duración", "Ubicación Física"
                 }, 0);
                 JTable tabla = new JTable(modelo);
                 JScrollPane scroll = new JScrollPane(tabla);
@@ -216,13 +225,13 @@ public class VentanaPrincipal extends JFrame {
                                 boolean coincideTipo = filtroTipo.equals("todos") || d.getTipo().toLowerCase().equals(filtroTipo);
                                 boolean coincideTitulo = filtroTitulo.isEmpty() || d.getTitulo().toLowerCase().contains(filtroTitulo);
                                 if (coincideTipo && coincideTitulo) {
-                                    Object[] fila = new Object[13];
+                                    Object[] fila = new Object[15];
                                     fila[0] = d.getId();
                                     fila[1] = d.getTipo();
                                     fila[2] = d.getTitulo();
                                     fila[3] = d.getAutor();
                                     fila[4] = d.getAnioPublicacion();
-                                    fila[12] = d.getUbicacionFisica();
+                                    fila[13] = d.getUbicacionFisica();
 
                                     switch (d.getTipo().toLowerCase()) {
                                         case "libro":
@@ -236,11 +245,12 @@ public class VentanaPrincipal extends JFrame {
                                         case "cd":
                                         case "dvd":
                                             fila[9] = d.getGenero();
-                                            fila[11] = d.getDuracion();
+                                            fila[12] = d.getDuracion();
                                             break;
                                         case "pdf":
                                         case "tesis":
-                                            fila[10] = d.getTema();
+                                            fila[11] = d.getTema();
+                                            fila[10] = d.getAsesorAcademico();
                                             break;
                                     }
                                     modelo.addRow(fila);
@@ -548,7 +558,18 @@ public class VentanaPrincipal extends JFrame {
                     String titulo = JOptionPane.showInputDialog("Ingrese el nombre del documento a devolver:");
                     if (titulo == null || titulo.trim().isEmpty()) return;
 
-                    gestor.devolverDocumentoPorNombre(titulo.trim(), usuario.getCarnet()); // ← ✅ nueva llamada con carnet
+                    // Primero devolvemos el documento
+                    gestor.devolverDocumentoPorNombre(titulo.trim(), usuario.getCarnet());
+
+                    // Luego buscamos si tenía mora ese préstamo y la marcamos como pagada
+                    List<Prestamo> moras = gestor.obtenerMorasDeUsuarioPorCarnet(usuario.getCarnet());
+                    for (Prestamo mora : moras) {
+                        if (mora.getNombreDocumento().equalsIgnoreCase(titulo.trim())) {
+                            gestor.marcarMoraComoPagada(mora.getId());
+                            break; // solo una coincidencia es necesaria
+                        }
+                    }
+
                     mostrarMensaje("Documento devuelto correctamente.");
                 } catch (Exception ex) {
                     mostrarError("Error al devolver documento: " + ex.getMessage());
@@ -790,7 +811,9 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void mostrarPrestamos(List<Prestamo> prestamos) {
-        String[] columnas = {"ID", "Usuario", "Documento", "Fecha Préstamo", "Fecha Devolución", "Devuelto"};
+        String[] columnas = {
+                "ID", "Usuario", "Documento", "Fecha Préstamo", "Fecha Límite", "Fecha Devolución", "Devuelto"
+        };
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
 
         for (Prestamo p : prestamos) {
@@ -799,6 +822,7 @@ public class VentanaPrincipal extends JFrame {
                     p.getNombreUsuario(),
                     p.getNombreDocumento(),
                     p.getFechaPrestamo(),
+                    p.getFechaPrestamo().plusDays(7), // ✅ fecha límite calculada
                     p.getFechaDevolucion() != null ? p.getFechaDevolucion() : "No devuelto",
                     p.isDevuelto() ? "Sí" : "No"
             };
@@ -809,11 +833,10 @@ public class VentanaPrincipal extends JFrame {
         JScrollPane scroll = new JScrollPane(tabla);
 
         JDialog dialogo = new JDialog(this, "Listado de Préstamos", true);
-        dialogo.setSize(700, 400);
+        dialogo.setSize(800, 400);
         dialogo.setLocationRelativeTo(this);
         dialogo.add(scroll);
         dialogo.setVisible(true);
     }
 
-    // 🔚 Cierre de la clase
 }

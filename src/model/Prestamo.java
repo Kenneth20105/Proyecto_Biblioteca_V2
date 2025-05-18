@@ -41,6 +41,8 @@ public class Prestamo {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
+    public int getIdUsuario() {return idUsuario;}
+
     public void setIdUsuario(int idUsuario) {this.idUsuario = idUsuario;}
     public void setIdDocumento(int idDocumento) {this.idDocumento = idDocumento;}
 
