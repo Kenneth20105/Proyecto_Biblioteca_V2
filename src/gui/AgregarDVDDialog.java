@@ -1,4 +1,3 @@
-
 package gui;
 
 import model.DVD;
@@ -8,14 +7,14 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class AgregarDVDDialog extends JDialog {
-    private JTextField campoTitulo, campoAutor, campoAnio, campoDirector, campoDuracion, campoProductora;
+    private JTextField campoTitulo, campoAutor, campoAnio, campoDirector, campoDuracion, campoProductora, campoUbicacion;
     private GestorBiblioteca gestor;
 
     public AgregarDVDDialog(JFrame parent, GestorBiblioteca gestor) {
         super(parent, "Agregar DVD", true);
         this.gestor = gestor;
 
-        setLayout(new GridLayout(7, 2, 5, 5));
+        setLayout(new GridLayout(8, 2, 5, 5)); // +1 fila para ubicación
 
         add(new JLabel("Título:"));
         campoTitulo = new JTextField();
@@ -40,6 +39,11 @@ public class AgregarDVDDialog extends JDialog {
         add(new JLabel("Productora:"));
         campoProductora = new JTextField();
         add(campoProductora);
+
+        // ✅ Campo nuevo
+        add(new JLabel("Ubicación Física:"));
+        campoUbicacion = new JTextField();
+        add(campoUbicacion);
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.addActionListener(new ActionListener() {
@@ -70,8 +74,11 @@ public class AgregarDVDDialog extends JDialog {
             String director = campoDirector.getText();
             String duracion = campoDuracion.getText();
             String productora = campoProductora.getText();
+            String ubicacion = campoUbicacion.getText();
 
             DVD dvd = new DVD(0, titulo, autor, anio, director, duracion, productora);
+            dvd.setUbicacionFisica(ubicacion); // ✅ nuevo campo
+
             gestor.agregarDocumento(dvd);
             JOptionPane.showMessageDialog(this, "DVD agregado correctamente.");
             dispose();

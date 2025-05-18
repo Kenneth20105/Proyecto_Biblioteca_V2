@@ -14,12 +14,14 @@ public class DocumentoDAO {
     }
 
     public int agregarDocumentoBase(Documento doc) throws SQLException {
-        String sql = "INSERT INTO documentos (titulo, autor, anio_publicacion, tipo) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO documentos (titulo, autor, anio_publicacion, tipo, ubicacion_fisica) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, doc.getTitulo());
             stmt.setString(2, doc.getAutor());
             stmt.setInt(3, doc.getAnioPublicacion());
             stmt.setString(4, doc.getTipo());
+            stmt.setString(5, doc.getUbicacionFisica());
+
             stmt.executeUpdate();
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {
@@ -144,6 +146,7 @@ public class DocumentoDAO {
                 doc.setTitulo(rs.getString("titulo"));
                 doc.setAutor(rs.getString("autor"));
                 doc.setAnioPublicacion(rs.getInt("anio_publicacion"));
+                doc.setUbicacionFisica(rs.getString("ubicacion_fisica")); // << NUEVA LÍNEA
 
                 String tipo = doc.getTipo().toLowerCase();
 
@@ -160,12 +163,12 @@ public class DocumentoDAO {
                     case "cd":
                         doc.setGenero(rs.getString("genero_cd"));
                         doc.setDuracion(rs.getString("duracion_cd"));
-                        doc.setTema(rs.getString("artista")); // Usado como campo genérico
+                        doc.setTema(rs.getString("artista"));
                         break;
                     case "dvd":
-                        doc.setTema(rs.getString("director"));       // Puedes mapear a un campo personalizado si tienes uno específico
+                        doc.setTema(rs.getString("director"));
                         doc.setDuracion(rs.getString("duracion_dvd"));
-                        doc.setUniversidad(rs.getString("productora")); // Reutilizado campo si no tienes uno específico
+                        doc.setUniversidad(rs.getString("productora"));
                         break;
                     case "pdf":
                         doc.setTema(rs.getString("tema_pdf"));
@@ -175,13 +178,13 @@ public class DocumentoDAO {
                     case "tesis":
                         doc.setCarrera(rs.getString("carrera"));
                         doc.setUniversidad(rs.getString("universidad"));
-                        doc.setTema(rs.getString("asesor_academico")); // Campo temático alterno
+                        doc.setTema(rs.getString("asesor_academico"));
                         break;
                 }
 
                 lista.add(doc);
             }
-                }
+        }
         return lista;
     }
 

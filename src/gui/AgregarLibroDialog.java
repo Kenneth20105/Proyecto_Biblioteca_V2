@@ -1,4 +1,3 @@
-
 package gui;
 
 import model.Libro;
@@ -9,14 +8,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AgregarLibroDialog extends JDialog {
-    private JTextField campoTitulo, campoAutor, campoAnio, campoISBN, campoEditorial, campoPaginas;
+    private JTextField campoTitulo, campoAutor, campoAnio, campoISBN, campoEditorial, campoPaginas, campoUbicacion;
     private GestorBiblioteca gestor;
 
     public AgregarLibroDialog(JFrame parent, GestorBiblioteca gestor) {
         super(parent, "Agregar Libro", true);
         this.gestor = gestor;
 
-        setLayout(new GridLayout(7, 2, 5, 5));
+        setLayout(new GridLayout(8, 2, 5, 5)); // ✅ ahora con 8 filas
 
         add(new JLabel("Título:"));
         campoTitulo = new JTextField();
@@ -41,6 +40,11 @@ public class AgregarLibroDialog extends JDialog {
         add(new JLabel("Número de Páginas:"));
         campoPaginas = new JTextField();
         add(campoPaginas);
+
+        // ✅ NUEVO CAMPO: Ubicación Física
+        add(new JLabel("Ubicación Física:"));
+        campoUbicacion = new JTextField();
+        add(campoUbicacion);
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.addActionListener(new ActionListener() {
@@ -71,8 +75,11 @@ public class AgregarLibroDialog extends JDialog {
             String isbn = campoISBN.getText();
             String editorial = campoEditorial.getText();
             int paginas = Integer.parseInt(campoPaginas.getText());
+            String ubicacion = campoUbicacion.getText(); // ✅ NUEVO
 
             Libro libro = new Libro(0, titulo, autor, anio, isbn, editorial, paginas);
+            libro.setUbicacionFisica(ubicacion); // ✅ SET ubicacion física
+
             gestor.agregarDocumento(libro);
             JOptionPane.showMessageDialog(this, "Libro agregado correctamente.");
             dispose();

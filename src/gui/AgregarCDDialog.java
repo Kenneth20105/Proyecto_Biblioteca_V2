@@ -1,4 +1,3 @@
-
 package gui;
 
 import model.CD;
@@ -8,14 +7,14 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class AgregarCDDialog extends JDialog {
-    private JTextField campoTitulo, campoAutor, campoAnio, campoGenero, campoDuracion, campoArtista;
+    private JTextField campoTitulo, campoAutor, campoAnio, campoGenero, campoDuracion, campoArtista, campoUbicacion;
     private GestorBiblioteca gestor;
 
     public AgregarCDDialog(JFrame parent, GestorBiblioteca gestor) {
         super(parent, "Agregar CD", true);
         this.gestor = gestor;
 
-        setLayout(new GridLayout(7, 2, 5, 5));
+        setLayout(new GridLayout(8, 2, 5, 5)); // una fila más por el nuevo campo
 
         add(new JLabel("Título:"));
         campoTitulo = new JTextField();
@@ -40,6 +39,11 @@ public class AgregarCDDialog extends JDialog {
         add(new JLabel("Artista:"));
         campoArtista = new JTextField();
         add(campoArtista);
+
+        // ✅ Campo nuevo
+        add(new JLabel("Ubicación Física:"));
+        campoUbicacion = new JTextField();
+        add(campoUbicacion);
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.addActionListener(new ActionListener() {
@@ -70,8 +74,11 @@ public class AgregarCDDialog extends JDialog {
             String genero = campoGenero.getText();
             String duracion = campoDuracion.getText();
             String artista = campoArtista.getText();
+            String ubicacion = campoUbicacion.getText();
 
             CD cd = new CD(0, titulo, autor, anio, genero, duracion, artista);
+            cd.setUbicacionFisica(ubicacion); // ✅ asignamos ubicación
+
             gestor.agregarDocumento(cd);
             JOptionPane.showMessageDialog(this, "CD agregado correctamente.");
             dispose();

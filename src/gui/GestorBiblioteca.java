@@ -49,43 +49,58 @@ public class GestorBiblioteca {
         return documentoDAO.obtenerTodos();
     }
 
-    public List<Prestamo> obtenerPrestamosActivos() throws SQLException {
-        return prestamoDAO.obtenerPrestamosActivos();
+    public void devolverDocumentoPorNombre(String tituloDocumento, String carnetUsuario) throws SQLException {
+        Prestamo prestamo = prestamoDAO.obtenerPrestamoActivoPorTituloYCarnet(tituloDocumento, carnetUsuario);
+        if (prestamo == null) {
+            throw new SQLException("No se encontró un préstamo activo para ese documento.");
+        }
+
+        prestamoDAO.marcarComoDevuelto(prestamo.getId());
+
+        long diasAtraso = java.time.temporal.ChronoUnit.DAYS.between(
+                prestamo.getFechaPrestamo(),
+                java.time.LocalDate.now()
+        );
+
+        if (diasAtraso > 7) {
+            usuarioDAO.reducirMoraPorCarnet(carnetUsuario);
+            usuarioDAO.registrarMoraPagada(prestamo.getId()); // nuevo registro
+        }
     }
 
-    public void eliminarDocumento(int id) throws SQLException {
-        documentoDAO.eliminarDocumento(id);
+    public List<Prestamo> obtenerPrestamosActivosPorCarnet(String carnet) throws SQLException {
+        return prestamoDAO.obtenerPrestamosActivosPorCarnet(carnet);
     }
 
     public void eliminarPrestamo(int idPrestamo) throws SQLException {
         prestamoDAO.eliminarPrestamo(idPrestamo);
     }
 
-    public void prestarDocumento(int idUsuario, int idDocumento) throws SQLException {
-        int limite;
-        Usuario usuario = usuarioDAO.obtenerPorId(idUsuario);
+    public void prestarDocumentoPorTitulo(String carnet, String titulo) throws SQLException {
+        Usuario usuario = usuarioDAO.obtenerPorCarnet(carnet);
         if (usuario == null) {
             throw new SQLException("Usuario no encontrado.");
         }
 
-        switch (usuario.getRol()) {
-            case "profesor":
-                limite = 6;
-                break;
-            case "alumno":
-                limite = 3;
-                break;
-            default:
-                limite = Integer.MAX_VALUE; // sin límite para admin u otros
+        // ✅ Admins no tienen restricciones
+        if (usuario.getRol().trim().equalsIgnoreCase("administrador")) {
+            prestamoDAO.prestarDocumentoPorTitulo(carnet, titulo);
+            return;
         }
 
-        int prestamosActivos = prestamoDAO.contarPrestamosActivos(idUsuario);
-
+        // Para profesores y alumnos
+        int limite = usuario.getRol().equalsIgnoreCase("profesor") ? 6 : 3;
+        int prestamosActivos = prestamoDAO.contarPrestamosActivos(usuario.getId());
         if (prestamosActivos >= limite) {
             throw new SQLException("El usuario ha alcanzado el límite de préstamos permitidos.");
         }
 
-        prestamoDAO.prestarDocumento(idUsuario, idDocumento);
+        int mora = prestamoDAO.obtenerMoraUsuario(usuario.getId());
+        if (mora >= 3) {
+            throw new SQLException("No se puede prestar debido a moras acumuladas.");
+        }
+
+        prestamoDAO.prestarDocumentoPorTitulo(carnet, titulo);
     }
 
     public int obtenerMoraDeUsuario(int idUsuario) throws SQLException {
@@ -93,15 +108,20 @@ public class GestorBiblioteca {
     }
 
     public boolean puedePrestarDocumento(Usuario usuario) throws SQLException {
+        // ✅ Admins pueden prestar siempre
+        if (usuario.getRol().trim().equalsIgnoreCase("administrador")) {
+            return true;
+        }
+
         int prestamosActivos = prestamoDAO.contarPrestamosActivos(usuario.getId());
         int mora = prestamoDAO.obtenerMoraUsuario(usuario.getId());
 
         int limite = usuario.getRol().equalsIgnoreCase("profesor") ? 6 : 3;
-        return prestamosActivos < limite && mora < 3; // Ej: máximo 2 moras permitidas
+        return prestamosActivos < limite && mora < 3;
     }
 
-    public void devolverDocumento(int idPrestamo) throws SQLException {
-        prestamoDAO.devolverDocumento(idPrestamo);
+    public void devolverDocumentoPorNombre(String tituloDocumento) throws SQLException {
+        prestamoDAO.devolverDocumentoPorNombre(tituloDocumento);
     }
 
     public List<Prestamo> obtenerPrestamos() throws SQLException {
@@ -112,7 +132,19 @@ public class GestorBiblioteca {
         return prestamoDAO.obtenerMorasDeUsuarioPorCarnet(carnet);
     }
 
+    public List<Prestamo> obtenerPrestamosPorUsuario(int idUsuario) throws SQLException {
+        return prestamoDAO.obtenerPrestamosPorUsuario(idUsuario);
+    }
+
+    public List<Prestamo> obtenerPrestamosActivos() throws SQLException {
+        return prestamoDAO.obtenerPrestamosActivos();
+    }
+
     public List<String[]> obtenerDocumentosParaVista() throws SQLException {
         return documentoDAO.obtenerDocumentosParaVista();
+    }
+
+    public List<Prestamo> obtenerTodosLosPrestamos() throws SQLException {
+        return prestamoDAO.obtenerTodos();
     }
 }

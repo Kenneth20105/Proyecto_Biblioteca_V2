@@ -19,6 +19,15 @@ public class UsuarioDAO {
         }
     }
 
+    public void registrarMoraPagada(int idPrestamo) throws SQLException {
+        String sql = "INSERT INTO moras_pagadas (id_prestamo) VALUES (?)";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idPrestamo);
+            stmt.executeUpdate();
+        }
+    }
+
 
     public Usuario validarCredencialesPorCarnet(String carnet, String password) throws SQLException {
         String sql = "SELECT * FROM usuarios WHERE BINARY carnet = ? AND password = ?";
@@ -114,6 +123,15 @@ public class UsuarioDAO {
         String sql = "DELETE FROM usuarios WHERE id = ?";
         try (Connection conn = Conexion.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idUsuario);
+            stmt.executeUpdate();
+        }
+    }
+
+    public void reducirMoraPorCarnet(String carnet) throws SQLException {
+        String sql = "UPDATE usuarios SET mora = GREATEST(mora - 1, 0) WHERE carnet = ?";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, carnet);
             stmt.executeUpdate();
         }
     }

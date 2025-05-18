@@ -1,4 +1,3 @@
-
 package gui;
 
 import model.Tesis;
@@ -8,14 +7,14 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class AgregarTesisDialog extends JDialog {
-    private JTextField campoTitulo, campoAutor, campoAnio, campoCarrera, campoUniversidad, campoAsesor;
+    private JTextField campoTitulo, campoAutor, campoAnio, campoCarrera, campoUniversidad, campoAsesor, campoUbicacion;
     private GestorBiblioteca gestor;
 
     public AgregarTesisDialog(JFrame parent, GestorBiblioteca gestor) {
         super(parent, "Agregar Tesis", true);
         this.gestor = gestor;
 
-        setLayout(new GridLayout(7, 2, 5, 5));
+        setLayout(new GridLayout(8, 2, 5, 5)); // se suma una fila
 
         add(new JLabel("Título:"));
         campoTitulo = new JTextField();
@@ -40,6 +39,11 @@ public class AgregarTesisDialog extends JDialog {
         add(new JLabel("Asesor Académico:"));
         campoAsesor = new JTextField();
         add(campoAsesor);
+
+        // ✅ Campo nuevo
+        add(new JLabel("Ubicación Física:"));
+        campoUbicacion = new JTextField();
+        add(campoUbicacion);
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.addActionListener(new ActionListener() {
@@ -70,8 +74,11 @@ public class AgregarTesisDialog extends JDialog {
             String carrera = campoCarrera.getText();
             String universidad = campoUniversidad.getText();
             String asesor = campoAsesor.getText();
+            String ubicacion = campoUbicacion.getText();
 
             Tesis tesis = new Tesis(0, titulo, autor, anio, carrera, universidad, asesor);
+            tesis.setUbicacionFisica(ubicacion); // ✅ asignar ubicación
+
             gestor.agregarDocumento(tesis);
             JOptionPane.showMessageDialog(this, "Tesis agregada correctamente.");
             dispose();

@@ -36,6 +36,8 @@ public class Documento {
     private String formato;
     private String tema; // añadido para PDF
 
+    private String ubicacionFisica;
+
     // ✅ Constructores
     public Documento() {}
     public Documento(int id, String titulo, String autor, int anioPublicacion, String tipo) {
@@ -110,6 +112,10 @@ public class Documento {
 
     public String getTema() { return tema; }
     public void setTema(String tema) { this.tema = tema; }
+
+    //Ubicacion fisica
+    public String getUbicacionFisica() {return ubicacionFisica;}
+    public void setUbicacionFisica(String ubicacionFisica) {this.ubicacionFisica = ubicacionFisica;}
 
     @Override
     public String toString() {

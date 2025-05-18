@@ -1,4 +1,3 @@
-
 package gui;
 
 import model.Revista;
@@ -8,14 +7,14 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class AgregarRevistaDialog extends JDialog {
-    private JTextField campoTitulo, campoAutor, campoAnio, campoNumero, campoMes, campoCategoria, campoEditorial;
+    private JTextField campoTitulo, campoAutor, campoAnio, campoNumero, campoMes, campoCategoria, campoEditorial, campoUbicacion;
     private GestorBiblioteca gestor;
 
     public AgregarRevistaDialog(JFrame parent, GestorBiblioteca gestor) {
         super(parent, "Agregar Revista", true);
         this.gestor = gestor;
 
-        setLayout(new GridLayout(8, 2, 5, 5));
+        setLayout(new GridLayout(9, 2, 5, 5)); // ← aumentamos una fila
 
         add(new JLabel("Título:"));
         campoTitulo = new JTextField();
@@ -44,6 +43,11 @@ public class AgregarRevistaDialog extends JDialog {
         add(new JLabel("Editorial:"));
         campoEditorial = new JTextField();
         add(campoEditorial);
+
+        // ✅ NUEVO CAMPO
+        add(new JLabel("Ubicación Física:"));
+        campoUbicacion = new JTextField();
+        add(campoUbicacion);
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.addActionListener(new ActionListener() {
@@ -75,8 +79,11 @@ public class AgregarRevistaDialog extends JDialog {
             String mes = campoMes.getText();
             String categoria = campoCategoria.getText();
             String editorial = campoEditorial.getText();
+            String ubicacion = campoUbicacion.getText(); // ✅ NUEVO
 
             Revista revista = new Revista(0, titulo, autor, anio, numero, mes, categoria, editorial);
+            revista.setUbicacionFisica(ubicacion); // ✅ SET ubicación física
+
             gestor.agregarDocumento(revista);
             JOptionPane.showMessageDialog(this, "Revista agregada correctamente.");
             dispose();

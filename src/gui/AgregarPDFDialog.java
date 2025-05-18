@@ -1,4 +1,3 @@
-
 package gui;
 
 import model.PDF;
@@ -8,14 +7,14 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class AgregarPDFDialog extends JDialog {
-    private JTextField campoTitulo, campoAutor, campoAnio, campoTema, campoPaginas, campoAutorOriginal;
+    private JTextField campoTitulo, campoAutor, campoAnio, campoTema, campoPaginas, campoAutorOriginal, campoUbicacion;
     private GestorBiblioteca gestor;
 
     public AgregarPDFDialog(JFrame parent, GestorBiblioteca gestor) {
         super(parent, "Agregar PDF", true);
         this.gestor = gestor;
 
-        setLayout(new GridLayout(7, 2, 5, 5));
+        setLayout(new GridLayout(8, 2, 5, 5)); // una fila extra
 
         add(new JLabel("Título:"));
         campoTitulo = new JTextField();
@@ -40,6 +39,11 @@ public class AgregarPDFDialog extends JDialog {
         add(new JLabel("Autor Original:"));
         campoAutorOriginal = new JTextField();
         add(campoAutorOriginal);
+
+        // ✅ NUEVO CAMPO
+        add(new JLabel("Ubicación Física:"));
+        campoUbicacion = new JTextField();
+        add(campoUbicacion);
 
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.addActionListener(new ActionListener() {
@@ -70,8 +74,11 @@ public class AgregarPDFDialog extends JDialog {
             String tema = campoTema.getText();
             int paginas = Integer.parseInt(campoPaginas.getText());
             String autorOriginal = campoAutorOriginal.getText();
+            String ubicacion = campoUbicacion.getText(); // ✅ nuevo campo
 
             PDF pdf = new PDF(0, titulo, autor, anio, tema, paginas, autorOriginal);
+            pdf.setUbicacionFisica(ubicacion); // ✅ asignar
+
             gestor.agregarDocumento(pdf);
             JOptionPane.showMessageDialog(this, "PDF agregado correctamente.");
             dispose();
