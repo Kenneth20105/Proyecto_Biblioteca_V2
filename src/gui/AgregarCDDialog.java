@@ -40,7 +40,7 @@ public class AgregarCDDialog extends JDialog {
         campoArtista = new JTextField();
         add(campoArtista);
 
-        // ✅ Campo nuevo
+
         add(new JLabel("Ubicación Física:"));
         campoUbicacion = new JTextField();
         add(campoUbicacion);
@@ -77,7 +77,7 @@ public class AgregarCDDialog extends JDialog {
             String ubicacion = campoUbicacion.getText();
 
             CD cd = new CD(0, titulo, autor, anio, genero, duracion, artista);
-            cd.setUbicacionFisica(ubicacion); // ✅ asignamos ubicación
+            cd.setUbicacionFisica(ubicacion);
 
             gestor.agregarDocumento(cd);
             JOptionPane.showMessageDialog(this, "CD agregado correctamente.");

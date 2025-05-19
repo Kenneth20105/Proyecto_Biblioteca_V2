@@ -37,17 +37,15 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void construirUI() {
-        // 🔝 PANEL SUPERIOR
-        // PANEL SUPERIOR
+
         JPanel panelSuperior = new JPanel(new BorderLayout());
 
-// Banner a la izquierda
+
         JLabel labelBanner;
         try {
-            // Cargar la imagen original
+
             ImageIcon originalIcon = new ImageIcon(getClass().getResource("Banner donbosco V4.png"));
-            // Escalar la imagen
-            int anchoDeseado = 1800;  // Por ejemplo
+            int anchoDeseado = 1800;
             int altoDeseado = 300;
 
             Image imagenEscalada = originalIcon.getImage().getScaledInstance(anchoDeseado, altoDeseado, Image.SCALE_SMOOTH);
@@ -59,13 +57,13 @@ public class VentanaPrincipal extends JFrame {
         }
         panelSuperior.add(labelBanner, BorderLayout.WEST);
         panelSuperior.add(labelBanner, BorderLayout.WEST);
-// Botón de usuario
+
         JButton botonUsuario = new JButton("👤");
         botonUsuario.setFocusPainted(false);
         botonUsuario.setMargin(new Insets(4, 8, 4, 8));
         botonUsuario.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-     //Menu emergente
+
         JPopupMenu menuUsuario = new JPopupMenu();
 
         JMenuItem itemPrestar = new JMenuItem("Prestar");
@@ -149,23 +147,23 @@ public class VentanaPrincipal extends JFrame {
         menuUsuario.add(itemMora);
         menuUsuario.add(itemCerrar);
 
-// Mostrar el menú al hacer clic en el emoji
+
         botonUsuario.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 menuUsuario.show(botonUsuario, 0, botonUsuario.getHeight());
             }
         });
 
-// Alineación a la derecha
+
         JPanel panelDerecho = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelDerecho.setOpaque(false);
         panelDerecho.add(botonUsuario);
         panelSuperior.add(panelDerecho, BorderLayout.EAST);
 
-// Añadir panel completo al frame
+
         add(panelSuperior, BorderLayout.NORTH);
 
-        // 📋 PANEL CENTRAL
+
         cardLayout = new CardLayout();
         panelPrincipal = new JPanel(cardLayout);
 
@@ -178,7 +176,7 @@ public class VentanaPrincipal extends JFrame {
 
         add(panelPrincipal, BorderLayout.CENTER);
 
-        // ⬇️ PANEL INFERIOR
+
         JPanel botonera = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         JButton btnAgregarDocumento = new JButton("Agregar Documento");
@@ -204,7 +202,7 @@ public class VentanaPrincipal extends JFrame {
                 panelFiltro.add(comboTipo);
                 panelFiltro.add(btnBuscar);
                 panelFiltro.add(btnLimpiar);
-                 //Edicion de tabla de documentos
+
                 DefaultTableModel modelo = new DefaultTableModel(new String[]{
                         "ID", "Tipo", "Título", "Autor", "Año", "Editorial", "Páginas",
                         "Número", "Mes", "Género","Asesor Academico", "Tema", "Duración", "Ubicación Física"
@@ -272,10 +270,10 @@ public class VentanaPrincipal extends JFrame {
                 panelFinal.add(panelFiltro, BorderLayout.NORTH);
                 panelFinal.add(scroll, BorderLayout.CENTER);
 
-                // Panel inferior (izquierda y derecha)
+
                 JPanel panelInferior = new JPanel(new BorderLayout());
 
-                // IZQUIERDA: botones de acción
+
                 JPanel panelIzquierdo = new JPanel(new FlowLayout(FlowLayout.LEFT));
                 JButton btnPrestarDoc = new JButton("Prestar Documento");
                 btnPrestarDoc.addActionListener(e2 -> {
@@ -321,7 +319,7 @@ public class VentanaPrincipal extends JFrame {
                 });
                 panelIzquierdo.add(btnDevolverDoc);
 
-                // DERECHA: volver
+
                 JPanel panelDerecho = new JPanel(new FlowLayout(FlowLayout.RIGHT));
                 JButton btnVolver = new JButton("Volver al Menú Principal");
                 btnVolver.addActionListener(ev -> cardLayout.show(panelPrincipal, "inicio"));
@@ -412,10 +410,10 @@ public class VentanaPrincipal extends JFrame {
                     JPanel panelUsuarios = new JPanel(new BorderLayout());
                     panelUsuarios.add(scroll, BorderLayout.CENTER);
 
-                    // 🔽 Panel inferior (izquierda y derecha)
+
                     JPanel panelInferior = new JPanel(new BorderLayout());
 
-                    // IZQUIERDA
+
                     JPanel panelIzquierdo = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
                     JButton btnAgregar = new JButton("Agregar Usuario");
@@ -533,14 +531,13 @@ public class VentanaPrincipal extends JFrame {
 
                     panelInferior.add(panelIzquierdo, BorderLayout.WEST);
 
-                    // DERECHA
+
                     JPanel panelDerecho = new JPanel(new FlowLayout(FlowLayout.RIGHT));
                     JButton btnVolver = new JButton("Volver al Menú Principal");
                     btnVolver.addActionListener(evt -> cardLayout.show(panelPrincipal, "inicio"));
                     panelDerecho.add(btnVolver);
                     panelInferior.add(panelDerecho, BorderLayout.EAST);
 
-                    // Agrega la parte inferior al panel principal
                     panelUsuarios.add(panelInferior, BorderLayout.SOUTH);
 
                     panelPrincipal.add(panelUsuarios, "usuarios");
@@ -558,15 +555,14 @@ public class VentanaPrincipal extends JFrame {
                     String titulo = JOptionPane.showInputDialog("Ingrese el nombre del documento a devolver:");
                     if (titulo == null || titulo.trim().isEmpty()) return;
 
-                    // Primero devolvemos el documento
+
                     gestor.devolverDocumentoPorNombre(titulo.trim(), usuario.getCarnet());
 
-                    // Luego buscamos si tenía mora ese préstamo y la marcamos como pagada
                     List<Prestamo> moras = gestor.obtenerMorasDeUsuarioPorCarnet(usuario.getCarnet());
                     for (Prestamo mora : moras) {
                         if (mora.getNombreDocumento().equalsIgnoreCase(titulo.trim())) {
                             gestor.marcarMoraComoPagada(mora.getId());
-                            break; // solo una coincidencia es necesaria
+                            break;
                         }
                     }
 
@@ -724,42 +720,6 @@ public class VentanaPrincipal extends JFrame {
     }
     // cierre correcto de construirUI
 
-    private void mostrarPrestamosActivosEnTabla(List<Prestamo> prestamos) {
-        String[] columnas = { "ID", "Carnet Usuario", "Documento", "Fecha Préstamo", "Fecha Devolución", "Devuelto" };
-        DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
-
-        for (Prestamo p : prestamos) {
-            modelo.addRow(new Object[]{
-                    p.getId(),
-                    p.getNombreUsuario() != null ? p.getNombreUsuario() : "N/A",
-                    p.getNombreDocumento() != null ? p.getNombreDocumento() : "N/A",
-                    p.getFechaPrestamo(),
-                    p.getFechaDevolucion() != null
-                            ? p.getFechaDevolucion()
-                            : p.getFechaPrestamo().plusDays(7),
-                    p.isDevuelto() ? "Sí" : "No"
-            });
-        }
-
-        JTable tabla = new JTable(modelo);
-        JScrollPane scroll = new JScrollPane(tabla);
-        tabla.setFillsViewportHeight(true);
-
-        JPanel panelPrestamos = new JPanel(new BorderLayout());
-        panelPrestamos.add(scroll, BorderLayout.CENTER);
-
-        JButton btnVolver = new JButton("Volver al Menú Principal");
-        btnVolver.addActionListener(e -> cardLayout.show(panelPrincipal, "inicio"));
-        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelBoton.add(btnVolver);
-        panelPrestamos.add(panelBoton, BorderLayout.SOUTH);
-
-        panelPrincipal.add(panelPrestamos, "prestamos_activos");
-        cardLayout.show(panelPrincipal, "prestamos_activos");
-    }
-
-    // ✅ Métodos auxiliares fuera del metodo construirUI
-
     private void mostrarSeleccionTipo() {
         String[] tipos = {"Libro", "Revista", "CD", "DVD", "PDF", "Tesis"};
         String tipoSeleccionado = (String) JOptionPane.showInputDialog(
@@ -790,18 +750,6 @@ public class VentanaPrincipal extends JFrame {
         }
     }
 
-    private void mostrarDocumentos() {
-        try {
-            List<Documento> docs = gestor.obtenerDocumentos();
-            areaSalida.setText("");
-            for (Documento doc : docs) {
-                areaSalida.append(doc.toString() + "\n");
-            }
-        } catch (SQLException ex) {
-            mostrarError("Error al mostrar documentos: " + ex.getMessage());
-        }
-    }
-
     private void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
     }
@@ -822,7 +770,7 @@ public class VentanaPrincipal extends JFrame {
                     p.getNombreUsuario(),
                     p.getNombreDocumento(),
                     p.getFechaPrestamo(),
-                    p.getFechaPrestamo().plusDays(7), // ✅ fecha límite calculada
+                    p.getFechaPrestamo().plusDays(7),
                     p.getFechaDevolucion() != null ? p.getFechaDevolucion() : "No devuelto",
                     p.isDevuelto() ? "Sí" : "No"
             };

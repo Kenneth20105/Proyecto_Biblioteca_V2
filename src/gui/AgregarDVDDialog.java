@@ -40,7 +40,7 @@ public class AgregarDVDDialog extends JDialog {
         campoProductora = new JTextField();
         add(campoProductora);
 
-        // ✅ Campo nuevo
+
         add(new JLabel("Ubicación Física:"));
         campoUbicacion = new JTextField();
         add(campoUbicacion);
@@ -77,8 +77,7 @@ public class AgregarDVDDialog extends JDialog {
             String ubicacion = campoUbicacion.getText();
 
             DVD dvd = new DVD(0, titulo, autor, anio, director, duracion, productora);
-            dvd.setUbicacionFisica(ubicacion); // ✅ nuevo campo
-
+            dvd.setUbicacionFisica(ubicacion);
             gestor.agregarDocumento(dvd);
             JOptionPane.showMessageDialog(this, "DVD agregado correctamente.");
             dispose();

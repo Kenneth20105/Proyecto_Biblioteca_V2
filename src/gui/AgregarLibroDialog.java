@@ -15,7 +15,7 @@ public class AgregarLibroDialog extends JDialog {
         super(parent, "Agregar Libro", true);
         this.gestor = gestor;
 
-        setLayout(new GridLayout(8, 2, 5, 5)); // ✅ ahora con 8 filas
+        setLayout(new GridLayout(8, 2, 5, 5));
 
         add(new JLabel("Título:"));
         campoTitulo = new JTextField();
@@ -41,7 +41,7 @@ public class AgregarLibroDialog extends JDialog {
         campoPaginas = new JTextField();
         add(campoPaginas);
 
-        // ✅ NUEVO CAMPO: Ubicación Física
+
         add(new JLabel("Ubicación Física:"));
         campoUbicacion = new JTextField();
         add(campoUbicacion);
@@ -75,10 +75,10 @@ public class AgregarLibroDialog extends JDialog {
             String isbn = campoISBN.getText();
             String editorial = campoEditorial.getText();
             int paginas = Integer.parseInt(campoPaginas.getText());
-            String ubicacion = campoUbicacion.getText(); // ✅ NUEVO
+            String ubicacion = campoUbicacion.getText();
 
             Libro libro = new Libro(0, titulo, autor, anio, isbn, editorial, paginas);
-            libro.setUbicacionFisica(ubicacion); // ✅ SET ubicacion física
+            libro.setUbicacionFisica(ubicacion);
 
             gestor.agregarDocumento(libro);
             JOptionPane.showMessageDialog(this, "Libro agregado correctamente.");

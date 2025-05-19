@@ -108,13 +108,6 @@ public class DocumentoDAO {
                 break;
         }
     }
-    public void eliminarDocumento(int id) throws SQLException {
-        String sql = "DELETE FROM documentos WHERE id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-        }
-    }
 
     public List<Documento> obtenerTodos() throws SQLException {
         List<Documento> lista = new ArrayList<>();
@@ -188,75 +181,5 @@ public class DocumentoDAO {
         return lista;
     }
 
-            public List<String[]> obtenerDocumentosParaVista ()throws SQLException {
-                List<String[]> documentos = new ArrayList<>();
-                String sql =
-                        "SELECT d.titulo, d.autor, d.anio_publicacion, d.tipo, " +
-                                "l.editorial AS editorial_libro, l.numero_paginas, " +
-                                "r.numero AS numero_revista, r.mes, r.categoria, r.editorial AS editorial_revista, " +
-                                "c.genero AS genero_cd, c.duracion AS duracion_cd, c.artista, " +
-                                "dv.director, dv.duracion AS duracion_dvd, dv.productora, " +
-                                "t.carrera, t.universidad, t.asesor_academico " +
-                                "FROM documentos d " +
-                                "LEFT JOIN libros l ON d.id = l.id " +
-                                "LEFT JOIN revistas r ON d.id = r.id " +
-                                "LEFT JOIN cds c ON d.id = c.id " +
-                                "LEFT JOIN dvds dv ON d.id = dv.id " +
-                                "LEFT JOIN tesis t ON d.id = t.id";
-
-                try (Connection conn = Conexion.getConnection();
-                     PreparedStatement stmt = conn.prepareStatement(sql);
-                     ResultSet rs = stmt.executeQuery()) {
-
-                    while (rs.next()) {
-                        String[] fila = new String[10];
-                        fila[0] = rs.getString("titulo");
-                        fila[1] = rs.getString("autor");
-                        fila[2] = String.valueOf(rs.getInt("anio_publicacion"));
-                        fila[3] = rs.getString("tipo");
-
-                        String tipo = fila[3].toLowerCase();
-
-                        // Rellenar según el tipo de documento
-                        switch (tipo) {
-                            case "libro":
-                                fila[4] = rs.getString("editorial_libro");
-                                fila[5] = String.valueOf(rs.getInt("numero_paginas"));
-                                break;
-                            case "revista":
-                                fila[4] = rs.getString("editorial_revista");
-                                fila[5] = String.valueOf(rs.getInt("numero_revista"));
-                                fila[6] = rs.getString("mes");
-                                fila[7] = rs.getString("categoria");
-                                break;
-                            case "cd":
-                                fila[4] = rs.getString("genero_cd");
-                                fila[5] = rs.getString("duracion_cd");
-                                fila[6] = rs.getString("artista");
-                                break;
-                            case "dvd":
-                                fila[4] = rs.getString("director");
-                                fila[5] = rs.getString("duracion_dvd");
-                                fila[6] = rs.getString("productora");
-                                break;
-                            case "tesis":
-                                fila[4] = rs.getString("carrera");
-                                fila[5] = rs.getString("universidad");
-                                fila[6] = rs.getString("asesor_academico");
-                                break;
-                            default:
-                                fila[4] = "";
-                                fila[5] = "";
-                                fila[6] = "";
-
-                        }
-
-
-                        documentos.add(fila);
-                    }
-                }
-
-                return documentos;
-            }
-        }
+}
 

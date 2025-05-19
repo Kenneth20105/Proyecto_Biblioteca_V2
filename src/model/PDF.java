@@ -20,5 +20,4 @@ public class PDF extends Documento {
     public void setNumeroPaginas(int numeroPaginas) { this.numeroPaginas = numeroPaginas; }
 
     public String getAutorOriginal() { return autorOriginal; }
-    public void setAutorOriginal(String autorOriginal) { this.autorOriginal = autorOriginal; }
 }

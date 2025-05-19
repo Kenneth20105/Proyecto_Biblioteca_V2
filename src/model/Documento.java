@@ -7,7 +7,6 @@ public class Documento {
     private String autor;
     private int anioPublicacion;
 
-    // Campos específicos
     // Libros
     private String editorial;
     private int numeroPaginas;
@@ -38,7 +37,7 @@ public class Documento {
 
     private String ubicacionFisica;
 
-    // ✅ Constructores
+    //Constructores
     public Documento() {}
     public Documento(int id, String titulo, String autor, int anioPublicacion, String tipo) {
         this.id = id;

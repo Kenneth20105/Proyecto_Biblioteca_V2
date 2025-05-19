@@ -4,8 +4,6 @@ import model.Usuario;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 public class LoginWindow extends JFrame {
@@ -35,7 +33,7 @@ public class LoginWindow extends JFrame {
         panelPrincipal.setLayout(new BorderLayout(10, 10));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        // Panel superior: título y logo
+
         JPanel panelSuperior = new JPanel(new BorderLayout(5, 5));
 
         JLabel tituloLabel = new JLabel("Biblioteca Amigos de Don Bosco");
@@ -52,7 +50,7 @@ public class LoginWindow extends JFrame {
 
         panelPrincipal.add(panelSuperior, BorderLayout.NORTH);
 
-        // Formulario de campos
+
         JPanel formulario = new JPanel(new GridLayout(4, 1, 10, 5));
 
         JLabel labelCarnet = new JLabel("Carnet:");
@@ -70,7 +68,7 @@ public class LoginWindow extends JFrame {
 
         panelPrincipal.add(formulario, BorderLayout.CENTER);
 
-        // Botón de inicio
+
         JButton btnIniciar = new JButton("Iniciar Sesión");
         btnIniciar.setPreferredSize(new Dimension(150, 30));
         btnIniciar.addActionListener(e -> iniciarSesion());

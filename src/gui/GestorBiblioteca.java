@@ -50,13 +50,13 @@ public class GestorBiblioteca {
     }
 
     public void devolverDocumentoPorNombre(String tituloDocumento, String carnet) throws SQLException {
-        // ✅ Obtener el préstamo ANTES de marcar como devuelto
+        //Obtener el préstamo ANTES de marcar como devuelto
         Prestamo prestamo = prestamoDAO.obtenerPrestamoActivoPorTituloYCarnet(tituloDocumento, carnet);
 
-        // ✅ Luego marcar como devuelto
+        // Luego marcar como devuelto
         prestamoDAO.devolverDocumentoPorNombre(tituloDocumento, carnet);
 
-        // ✅ Si tenía mora, calcular y registrar
+        // Si tenía mora, calcular y registrar
         if (prestamo != null && calcularDiasAtraso(prestamo) > 7) {
             long dias = calcularDiasAtraso(prestamo) - 7;
             double moraDiaria = prestamoDAO.obtenerMoraDiaria(prestamo.getFechaPrestamo().getYear());
@@ -64,9 +64,6 @@ public class GestorBiblioteca {
 
             prestamoDAO.registrarPagoMora(prestamo.getIdUsuario(), prestamo.getId(), totalMora);
         }
-    }
-    public List<Prestamo> obtenerPrestamosActivosPorCarnet(String carnet) throws SQLException {
-        return prestamoDAO.obtenerPrestamosActivosPorCarnet(carnet);
     }
 
     public void eliminarPrestamo(int idPrestamo) throws SQLException {
@@ -102,9 +99,6 @@ public class GestorBiblioteca {
         prestamoDAO.prestarDocumentoPorTitulo(carnet, titulo);
     }
 
-    public int obtenerMoraDeUsuario(int idUsuario) throws SQLException {
-        return prestamoDAO.obtenerMoraUsuario(idUsuario);
-    }
 
     public boolean puedePrestarDocumento(Usuario usuario) throws SQLException {
         // Admins pueden prestar siempre
@@ -117,18 +111,6 @@ public class GestorBiblioteca {
 
         int limite = usuario.getRol().equalsIgnoreCase("profesor") ? 6 : 3;
         return prestamosActivos < limite && mora < 3;
-    }
-
-    public boolean pagarMoras(String carnet) throws SQLException {
-        List<Prestamo> moras = prestamoDAO.obtenerMorasDeUsuarioPorCarnet(carnet);
-        for (Prestamo mora : moras) {if (!mora.isDevuelto()) {return false;}
-        }
-        // Todos los préstamos con mora están devueltos, registrar pago
-        for (Prestamo mora : moras) {prestamoDAO.marcarMoraComoPagada(mora.getId());}return true;
-    }
-
-    public List<Prestamo> obtenerPrestamos() throws SQLException {
-        return prestamoDAO.obtenerTodos();
     }
 
     public List<Prestamo> obtenerMorasDeUsuarioPorCarnet(String carnet) throws SQLException {
@@ -149,14 +131,6 @@ public class GestorBiblioteca {
 
     public void marcarMoraComoPagada(int idPrestamo) throws SQLException {
         prestamoDAO.marcarMoraComoPagada(idPrestamo);
-    }
-
-    public List<String[]> obtenerDocumentosParaVista() throws SQLException {
-        return documentoDAO.obtenerDocumentosParaVista();
-    }
-
-    public List<Prestamo> obtenerTodosLosPrestamos() throws SQLException {
-        return prestamoDAO.obtenerTodos();
     }
 
     private long calcularDiasAtraso(Prestamo p) {

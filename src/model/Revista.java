@@ -16,13 +16,11 @@ public class Revista extends Documento {
     }
 
     public int getNumero() { return numero; }
-    public void setNumero(int numero) { this.numero = numero; }
 
     public String getMes() { return mes; }
     public void setMes(String mes) { this.mes = mes; }
 
     public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
 
     public String getEditorial() { return editorial; }
     public void setEditorial(String editorial) { this.editorial = editorial; }

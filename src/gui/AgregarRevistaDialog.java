@@ -44,7 +44,7 @@ public class AgregarRevistaDialog extends JDialog {
         campoEditorial = new JTextField();
         add(campoEditorial);
 
-        // ✅ NUEVO CAMPO
+
         add(new JLabel("Ubicación Física:"));
         campoUbicacion = new JTextField();
         add(campoUbicacion);
@@ -79,10 +79,10 @@ public class AgregarRevistaDialog extends JDialog {
             String mes = campoMes.getText();
             String categoria = campoCategoria.getText();
             String editorial = campoEditorial.getText();
-            String ubicacion = campoUbicacion.getText(); // ✅ NUEVO
+            String ubicacion = campoUbicacion.getText();
 
             Revista revista = new Revista(0, titulo, autor, anio, numero, mes, categoria, editorial);
-            revista.setUbicacionFisica(ubicacion); // ✅ SET ubicación física
+            revista.setUbicacionFisica(ubicacion);
 
             gestor.agregarDocumento(revista);
             JOptionPane.showMessageDialog(this, "Revista agregada correctamente.");

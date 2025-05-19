@@ -74,10 +74,10 @@ public class AgregarPDFDialog extends JDialog {
             String tema = campoTema.getText();
             int paginas = Integer.parseInt(campoPaginas.getText());
             String autorOriginal = campoAutorOriginal.getText();
-            String ubicacion = campoUbicacion.getText(); // ✅ nuevo campo
+            String ubicacion = campoUbicacion.getText();
 
             PDF pdf = new PDF(0, titulo, autor, anio, tema, paginas, autorOriginal);
-            pdf.setUbicacionFisica(ubicacion); // ✅ asignar
+            pdf.setUbicacionFisica(ubicacion);
 
             gestor.agregarDocumento(pdf);
             JOptionPane.showMessageDialog(this, "PDF agregado correctamente.");

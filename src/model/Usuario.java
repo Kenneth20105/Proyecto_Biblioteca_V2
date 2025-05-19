@@ -41,10 +41,8 @@ public class Usuario {
     // Setters
     public void setId(int id) { this.id = id; }
     public void setNombre(String nombre) { this.nombre = nombre; }
-    public void setCarnet(String carnet) { this.carnet = carnet; }
     public void setPassword(String password) { this.password = password; }
     public void setRol(String rol) { this.rol = rol; }
-    public void setMora(int mora) { this.mora = mora;}
 
 
 

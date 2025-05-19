@@ -77,7 +77,7 @@ public class AgregarTesisDialog extends JDialog {
             String ubicacion = campoUbicacion.getText();
 
             Tesis tesis = new Tesis(0, titulo, autor, anio, carrera, universidad, asesor);
-            tesis.setUbicacionFisica(ubicacion); // ✅ asignar ubicación
+            tesis.setUbicacionFisica(ubicacion);
 
             gestor.agregarDocumento(tesis);
             JOptionPane.showMessageDialog(this, "Tesis agregada correctamente.");
